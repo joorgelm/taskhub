@@ -1,0 +1,33 @@
+version: '3'
+services:
+
+  taskhub-api:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: taskhub-api
+    env_file:
+      - .env
+    command: java -jar app.jar
+    volumes:
+      - ./taskhub/src:/taskhub/src
+    ports:
+      - "3000:3000"
+    expose:
+      - 3000
+    depends_on:
+      - postgresql
+
+  postgresql:
+    container_name: taskhub-database
+    image: postgres:14.8
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    expose:
+      - 5432
+volumes:
+  taskhub-volume:
